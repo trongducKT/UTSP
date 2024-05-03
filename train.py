@@ -153,7 +153,7 @@ def train(epoch):
         batchloss.backward()
         torch.nn.utils.clip_grad_norm_(model.parameters(),1)
         optimizer.step()
-for i in range(args.EPOCHS):
+for i in range(1,args.EPOCHS+1):
     train(i)
     if (i>=200)and(i%10 == 0):
         torch.save(model.state_dict(),'Saved_Models/TSP_%d/scatgnn_layer_%d_hid_%d_model_%d_temp_%.3f.pth'%(args.num_of_nodes,args.nlayers,args.hidden,i,args.temperature))

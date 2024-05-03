@@ -151,7 +151,7 @@ def test(loader,topk = 20):
 
 
 #TSP200
-model_name = 'Saved_Models/TSP_%d/scatgnn_layer_2_hid_%d_model_210_temp_3.500.pth'%(args.num_of_nodes,args.hidden)# topk = 10
+model_name = 'Saved_Models/TSP_%d/scatgnn_layer_%d_hid_%d_model_210_temp_3.500.pth'%(args.num_of_nodes,args.nlayers,args.hidden)# topk = 10
 model.load_state_dict(torch.load(model_name))
 #Saved_indices,Saved_Values,Saved_sol,Saved_pos = test(test_loader,topk = 8) # epoch=20>10 
 Saved_indices,Saved_Values,Saved_sol,Saved_pos = test(test_loader,topk = args.topk) # epoch=20>10

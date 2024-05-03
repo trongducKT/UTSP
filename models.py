@@ -35,14 +35,11 @@ class SCTConv(torch.nn.Module):
         h_A = nn.LeakyReLU()(h_A)
         h_A2 = nn.LeakyReLU()(h_A2)
         h_A3 = nn.LeakyReLU()(h_A3)
-#        h_sct1, h_sct2, h_sct3 = scattering_diffusion(adj, support0)
-# S4
         h_sct1, h_sct2, h_sct3, h_sct4 = scattering_diffusionS4(adj, support0)
 
         h_sct1 = torch.abs(h_sct1) ** moment
         h_sct2 = torch.abs(h_sct2) ** moment
         h_sct3 = torch.abs(h_sct3) ** moment
-# S4
         h_sct4 = torch.abs(h_sct4) ** moment
         a_input_A = torch.cat((h, h_A), dim=2).unsqueeze(1)
         a_input_A2 = torch.cat((h, h_A2), dim=2).unsqueeze(1)
@@ -51,30 +48,10 @@ class SCTConv(torch.nn.Module):
         a_input_sct2 = torch.cat((h, h_sct2), dim=2).unsqueeze(1)
         a_input_sct3 = torch.cat((h, h_sct3), dim=2).unsqueeze(1)
         a_input_sct4 = torch.cat((h, h_sct4), dim=2).unsqueeze(1) # [b,1,n,2f]
-# S3
-#        a_input = torch.cat((a_input_A, a_input_A2, a_input_A3, a_input_sct1, a_input_sct2, a_input_sct3), 1).view(N, 6, -1)
-# S4
-#        a_input = torch.cat((a_input_A, a_input_A2, a_input_A3, a_input_sct1, a_input_sct2, a_input_sct3,a_input_sct4), 1).view(N, 7, -1)
-# 1 low pass + 3 high pass
         a_input = torch.cat((a_input_A, a_input_A2,a_input_sct1, a_input_sct2, a_input_sct3,a_input_sct4), 1).view(B,6,N,-1)
-#        print('a_input shape')
-#        print(a_input.size())
-        # xxxx stop
 
         e = torch.matmul(nn.functional.relu(a_input), self.a).squeeze(3)
-#        print('e shape')
-#        print(e.size())
-# S3
-#        attention = F.softmax(e, dim=1).view(N, 6, -1)
-# S4
         attention = F.softmax(e, dim=1).view(B,6, N, -1)
-#        print('attention size')
-#        print(attention.size())
-# S3
-#        h_all = torch.cat((h_A.unsqueeze(dim=2), h_A2.unsqueeze(dim=2), h_A3.unsqueeze(dim=2),
-#        h_sct1.unsqueeze(dim=2), h_sct2.unsqueeze(dim=2), h_sct3.unsqueeze(dim=2)),dim=2).view(N, 6, -1)
-        # h_A: [b,n,f]
-# S4
         h_all = torch.cat((h_A.unsqueeze(dim=1), h_A2.unsqueeze(dim=1),h_sct1.unsqueeze(dim=1), h_sct2.unsqueeze(dim=1), h_sct3.unsqueeze(dim=1), h_sct4.unsqueeze(dim=1)),dim=1).view(B, 6,N,-1)
         h_prime = torch.mul(attention, h_all)
         h_prime = torch.mean(h_prime, 1) # (B,n,f)
@@ -99,7 +76,6 @@ class GNN(nn.Module):
         self.mlp2 = nn.Linear(hidden_dim, output_dim)
         self.bn1 = nn.BatchNorm1d(hidden_dim)
         self.m = nn.Softmax(dim=1)
-#        self.mlp1 = Linear(hidden_dim * (1 + n_layers), output_dim)
 
     def forward(self, X, adj, moment=1, device='cuda'):
         X = self.in_proj(X)

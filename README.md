@@ -49,17 +49,15 @@ change the `instancenum` in new-solve-n.sh
 
 ## Search Parameters for TSP-200, TSP-500 and TSP-1000
 on TSP 200
-`./new-solve-200.sh  0 5 100 0 50 2 1 1` 
+`./new-solve-200.sh 0 5 30 0 100 2 1 1`
 
 
 on TSP 500
 `
-./new-solve-500.sh 0 5 100 0 50 2 1 1
+./new-solve-500.sh 0 5 30 0 100 2 1 1
 `
 
 on TSP 1000
-`./new-solve-1000.sh 0 5 100 0 50 2 1 1` or
-
 `
 ./new-solve-1000.sh 0 5 10 0 150 3 1 1
 `
