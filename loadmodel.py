@@ -51,12 +51,17 @@ device = args.device
 
 
 tsp_instances = np.load('./data/test_tsp_instance_%d.npy'%args.num_of_nodes) # 128 instances
+from scipy.spatial import distance_matrix
+temp_dis_matrix = []
+for i in range(int(tsp_instances.shape[0])):
+    temp_dis_matrix.append(distance_matrix(tsp_instances[i],tsp_instances[i]))
+tsp_instances = np.array(temp_dis_matrix)
 NumofTestSample = tsp_instances.shape[0]
 Std = np.std(tsp_instances, axis=1)
 Mean = np.mean(tsp_instances, axis=1)
 
 
-tsp_instances = tsp_instances - Mean.reshape((NumofTestSample,1,2))
+tsp_instances = tsp_instances - Mean.reshape((NumofTestSample,1,200))
 
 tsp_instances = args.rescale * tsp_instances # 2.0 is the rescale
 
@@ -80,31 +85,28 @@ print(count_parameters(model))
 
 
 
-def coord_to_adj(coord_arr):
-    dis_mat = distance_matrix(coord_arr,coord_arr)
-    return dis_mat
+def coord_to_adj(dis_matrix):
+    return dis_matrix
 
 
 tsp_instances_adj = np.zeros((total_samples,args.num_of_nodes,args.num_of_nodes))
 for i in range(total_samples):
     tsp_instances_adj[i] = coord_to_adj(tsp_instances[i])
 class TSP_Dataset(Dataset):
-    def __init__(self, coord,data, targets):
-        self.coord = torch.FloatTensor(coord)
+    def __init__(self, data, targets):
         self.data = torch.FloatTensor(data)
         self.targets = torch.LongTensor(targets)
 
     def __getitem__(self, index):
-        xy_pos = self.coord[index]
         x = self.data[index]
         y = self.targets[index]
 #        tsp_instance = Data(coord=x,sol=y)
-        return tuple(zip(xy_pos,x,y))
+        return tuple(zip(x,y))
 
     def __len__(self):
         return len(self.data)
 
-dataset = TSP_Dataset(tsp_instances,tsp_instances_adj,tsp_sols)
+dataset = TSP_Dataset(tsp_instances_adj,tsp_sols)
 testdata = dataset[0:] ##this is very important!
 TestData_size = len(testdata)
 batch_size = args.batch_size
