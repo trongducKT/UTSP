@@ -62,9 +62,9 @@ Std = np.std(tsp_instances, axis=1)
 Mean = np.mean(tsp_instances, axis=1)
 
 
-tsp_instances = tsp_instances - Mean.reshape((NumofTestSample,1, args.num_of_nodes))
-#tsp_instances = np.divide(tsp_instances,Std.reshape((NumofTestSample,1,2)))
-tsp_instances = args.rescale * tsp_instances # 2.0 is the rescale
+# tsp_instances = tsp_instances - Mean.reshape((NumofTestSample,1, args.num_of_nodes))
+# #tsp_instances = np.divide(tsp_instances,Std.reshape((NumofTestSample,1,2)))
+# tsp_instances = args.rescale * tsp_instances # 2.0 is the rescale
 tsp_sols = np.load('./data/train_tsp_sol_%d.npy'%args.num_of_nodes)
 
 
@@ -76,7 +76,7 @@ preposs_time = time.time()
 
 from models import GNN
 #scattering model
-model = GNN(input_dim=2, hidden_dim=args.hidden, output_dim=args.num_of_nodes, n_layers=args.nlayers)
+model = GNN(input_dim=args.num_of_nodes, hidden_dim=args.hidden, output_dim=args.num_of_nodes, n_layers=args.nlayers)
 from scipy.spatial import distance_matrix
 
 ### count model parameters
@@ -138,6 +138,8 @@ scheduler = StepLR(optimizer, step_size=args.stepsize, gamma=0.8)
 model.cuda()
 mask = torch.ones(args.num_of_nodes, args.num_of_nodes).cuda()
 mask.fill_diagonal_(0)
+
+import time
 def train(epoch):
     scheduler.step()
     model.train()
@@ -157,7 +159,6 @@ def train(epoch):
         Nrmlzd_constraint = torch.sum(Nrmlzd_constraint)
         loss = args.C1_penalty * Nrmlzd_constraint + 1.*torch.sum(TSPLoss_constaint) + args.diag_loss*torch.sum(Heat_mat_diagonals)
         batchloss = torch.sum(loss)/len(batch[0])
-
         print('Loss: %.5f'%batchloss.item())
         optimizer.zero_grad()
         batchloss.backward()
