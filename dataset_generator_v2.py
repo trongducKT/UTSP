@@ -192,12 +192,12 @@ print('________________________')
 print('Testing MetricTSPGenerator V2')
 loaded_datasets = {}
 try:
-    with np.load('dataset/Asia_MSB.npz') as f:
+    with np.load('/kaggle/input/dataset/Asia_MSB.npz') as f:
         loaded_datasets["Asia_MSB"] = np.array(f['data'])
 except:
     pass
 try:
-    with np.load('dataset/World_TSP.npz') as f:
+    with np.load('/kaggle/input/dataset/World_TSP.npz') as f:
         loaded_datasets["World_TSP"] = np.array(f['data'])
 except:
     pass
