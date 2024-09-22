@@ -104,9 +104,9 @@ class DatasetGenerator(ABC):
         problems = cls.generate_n_samples_without_edges(n_samples, loaded_datasets)
         
         # serialize and save json string with meta data of the dataset
-        output_json = cls.serialize_dataset(problems)
-        with open(os.path.join(save_dir, file_name), 'w') as f:
-            f.write(output_json)
+        # output_json = cls.serialize_dataset(problems)
+        # with open(os.path.join(save_dir, file_name), 'w') as f:
+        #     f.write(output_json)
         
         # also return the generated samples
         return problems
