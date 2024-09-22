@@ -98,7 +98,7 @@ class DatasetGenerator(ABC):
         # Ensure the save directory exists
         # if not os.path.exists(save_dir):
         #     os.makedirs(save_dir)
-        save_dir = "/input/dataset/"
+        save_dir = "/kaggle/input/dataset"
 
         # Generate samples - Note that this these samples are generated with out edges
         problems = cls.generate_n_samples_without_edges(n_samples, loaded_datasets)
