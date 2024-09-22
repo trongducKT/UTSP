@@ -12,6 +12,7 @@ import traceback
 import numpy as np
 from dataset_generator_v2 import MetricTSPV2Generator
 import traceback
+from loadmodel import run_UTSP
 
 
 def is_valid_path(path: List[int]) -> bool:
@@ -216,8 +217,8 @@ for problem, best_score in zip(problems, best_scores):
 
         # model = PSO(num_city=data.shape[0], dis_mat=data.copy())
         # route, Best = model.run()
-        route = infer_tabu_rule1(problem.edges)
-
+        # route = infer_tabu_rule1(problem.edges)
+        route, a, b, c = run_UTSP(problem.edges, 64, 2, 3.5, 20)
         # model = TS(num_city=data.shape[0], dis_mat=data.copy())
         # route, Best_length = model.run()
 
