@@ -143,8 +143,10 @@ def train(epoch):
     model.train()
     print('Epoch: %d'%epoch)
     for batch in train_loader:
+        # f0 = batch[0].cuda() 
+        # distance_m = batch[1].cuda()  
         f0 = batch[0].cuda() 
-        distance_m = batch[1].cuda()      
+        distance_m = batch[0].cuda()     
         adj = torch.exp(-1.*distance_m/args.temperature)
         adj *= mask 
         output = model(f0,adj)
