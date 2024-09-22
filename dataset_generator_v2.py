@@ -98,15 +98,15 @@ class DatasetGenerator(ABC):
         # Ensure the save directory exists
         # if not os.path.exists(save_dir):
         #     os.makedirs(save_dir)
-        save_dir = "/kaggle/input/dataset"
+        save_dir = "dataset"
 
         # Generate samples - Note that this these samples are generated with out edges
         problems = cls.generate_n_samples_without_edges(n_samples, loaded_datasets)
         
         # serialize and save json string with meta data of the dataset
-        # output_json = cls.serialize_dataset(problems)
-        # with open(os.path.join(save_dir, file_name), 'w') as f:
-        #     f.write(output_json)
+        output_json = cls.serialize_dataset(problems)
+        with open(os.path.join(save_dir, file_name), 'w') as f:
+            f.write(output_json)
         
         # also return the generated samples
         return problems
@@ -192,12 +192,12 @@ print('________________________')
 print('Testing MetricTSPGenerator V2')
 loaded_datasets = {}
 try:
-    with np.load('/kaggle/input/dataset/Asia_MSB.npz') as f:
+    with np.load('dataset/Asia_MSB.npz') as f:
         loaded_datasets["Asia_MSB"] = np.array(f['data'])
 except:
     pass
 try:
-    with np.load('/kaggle/input/dataset/World_TSP.npz') as f:
+    with np.load('dataset/World_TSP.npz') as f:
         loaded_datasets["World_TSP"] = np.array(f['data'])
 except:
     pass
